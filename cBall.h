@@ -1,5 +1,5 @@
 #pragma once
-class cBall
+class cBall : public cFizyka
 {
 public:
 	void rysuj();

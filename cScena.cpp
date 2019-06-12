@@ -8,6 +8,9 @@
 #define  B obj[2]
 #define  V 0.001
 
+#define L 3
+#define W 2.2
+
 void timer_binding(int msec);
 void key_binding(unsigned char key, int x, int y);
 cScena::cScena() {
@@ -15,8 +18,8 @@ cScena::cScena() {
 	obj.push_back(new cPlayer()); //plater 2;
 	obj.push_back(new cPlayer()); //ball;
 	P2->setX(-1);
-	P1->setX(0.5);
-	P1->setY(0.5);
+	P1->setX(-0.4);
+	P1->setY(-0.4);
 	
 }
 
@@ -36,12 +39,23 @@ void cScena::resize(int width, int height) {
 
 void cScena::timer()
 {
+		//AKTUALIZACJE WSZYSTKICH OBIEKTÓW
 	for (auto &el : obj) {
 		el->aktualizuj(GetTickCount());
 	}
+		//ODBICIA OD BOKÓW
+	if (B->getY() >= W) //gorna sciana
+		B->dostosuj_predkosc(B->getV(), 270);
+	if (B->getY() <= -W) //dolna sciana
+		B->dostosuj_predkosc(B->getV(), 90);
+	if (B->getX() >= L) //prawa sciana
+		B->dostosuj_predkosc(B->getV(), 180);
+	if (B->getX() <= -L) //lewa sciana
+		B->dostosuj_predkosc(B->getV(), 0);
 	if (P1->kolizja(*B))
-		B->ustaw_vX(P1->getVx());
-		
+		B->prowadz_pilke(*P1);
+	if (P2->kolizja(*B))
+		B->prowadz_pilke(*P2);
 	glutPostRedisplay();
 	glutTimerFunc(30, timer_binding, 0);
 }
@@ -114,18 +128,23 @@ void cScena::key(unsigned char key, int x, int y) {
 	case 's':
 		P1->dostosuj_predkosc(V, 270);
 		break;
+	case 'p': {
+		cPlayer *cf = dynamic_cast<cPlayer*>(B);
+		if (P1->kolizja(*B))
+			cf->strzal(*P1); }
+		break;
 
 	case '4':
-		P2->ustaw_predkosc(V, 180);
+		P2->dostosuj_predkosc(V, 180);
 		break;
 	case '6':
-		P2->ustaw_predkosc(V, 0);
+		P2->dostosuj_predkosc(V, 0);
 		break;
 	case '8':
-		P2->ustaw_predkosc(V, 90);
+		P2->dostosuj_predkosc(V, 90);
 		break;
 	case '5':
-		P2->ustaw_predkosc(V, 270);
+		P2->dostosuj_predkosc(V, 270);
 		break;
 	}
 }

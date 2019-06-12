@@ -36,6 +36,33 @@ void cFizyka::aktualizuj(int czas_aktualny)
 	czas_ += delta_t;
 }
 
+void cFizyka::dostosuj_predkosc(float _v, float _alfa_v)
+{
+	v_x_ = v_ * cos(alfa_v_ / 180.0*M_PI);
+	v_y_ = v_ * sin(alfa_v_ / 180.0*M_PI);
+	if (_alfa_v == 0)
+		v_x_ += _v;
+	if (_alfa_v == 180)
+		v_x_ -= _v;
+	if (_alfa_v == 90)
+		v_y_ += _v;
+	if (_alfa_v == 270)
+		v_y_ -= _v;
+	v_ = sqrt(v_x_*v_x_ + v_y_ * v_y_);
+	if (v_ > _v);
+	v_ = _v;
+	alfa_v_ = atan2(v_y_, v_x_)*180.0 / M_PI;
+}
+
+void cFizyka::prowadz_pilke(cFizyka& X)
+{
+	float kat,v;
+	kat = atan2(this->getY()- X.getY(),this->getX()- X.getX())*180.0 / M_PI;
+	//v = X.getV()*(this->getAlfaV()/ X.getAlfaV());
+	v = 0.001;
+	this->ustaw_predkosc(v,kat);
+}
+
 void cFizyka::reset()
 {
 	czas_ = GetTickCount();
@@ -47,7 +74,7 @@ cFizyka::cFizyka(float x, float y, float r) : x_(x), y_(y), r_(r)
 	v_y_ = 0.0;
 	v_ = 0.0;
 	alfa_v_ = 0.0;
-	tarcie_ = 0.97;
+	tarcie_ = 0.94;
 	mass_ = 0.0;
 
 	reset();

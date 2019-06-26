@@ -36,6 +36,11 @@ void cFizyka::aktualizuj(int czas_aktualny)
 	czas_ += delta_t;
 }
 
+void cFizyka::odbicieSlupek(cFizyka & X)
+{
+	alfa_v_ = atan2(this->getY() - X.getY(), this->getX() - X.getX())*180.0 / M_PI;
+}
+
 void cFizyka::dostosuj_predkosc(float _v, float _alfa_v)
 {
 	v_x_ = v_ * cos(alfa_v_ / 180.0*M_PI);
@@ -52,6 +57,18 @@ void cFizyka::dostosuj_predkosc(float _v, float _alfa_v)
 	if (v_ > _v);
 	v_ = _v;
 	alfa_v_ = atan2(v_y_, v_x_)*180.0 / M_PI;
+}
+
+void cFizyka::odbicieSciana(float _alfa_v)
+{
+	if (_alfa_v == 0)
+		alfa_v_ = 180 - alfa_v_;
+	if (_alfa_v == 180)
+		alfa_v_ = 180 - alfa_v_;
+	if (_alfa_v == 90)
+		alfa_v_ = -alfa_v_;
+	if (_alfa_v == 270)
+		alfa_v_ = -alfa_v_;
 }
 
 void cFizyka::prowadz_pilke(cFizyka& X)
@@ -79,7 +96,6 @@ cFizyka::cFizyka(float x, float y, float r) : x_(x), y_(y), r_(r)
 
 	reset();
 }
-
 
 cFizyka::~cFizyka()
 {

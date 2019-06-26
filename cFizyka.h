@@ -27,18 +27,21 @@ public:
 	float getVx() { return float(v_x_); }
 	float getVy() { return float(v_y_); }
 		//SETTERY
+	void setR(float _r) { r_ = _r; }
 	void setX(float _x) { x_ = _x; }
 	void setY(float _y) { y_ = _y; }
+	void setPosition(float _x, float _y) { y_ = _y; x_ = _x; }
 	void ustaw_fizyka(float _t) { tarcie_ = _t; } //ustawia tarcie
 	void ustaw_masa(float _m) { mass_ = _m; } //ustawia mase
+	void ustaw_predkosc(float _v, float _alfa_v) { v_ = _v; alfa_v_ = _alfa_v; } //ustawia poczatkowa predkosc
 		//AKCJE
 	void aktualizuj(int czas_aktualny);//zmienia polozenie obiektu na podstawie aktualnego czasu
-	
-	void ustaw_predkosc(float _v, float _alfa_v) { v_ = _v; alfa_v_ = _alfa_v; } //ustawia poczatkowa predkosc
+	void odbicieSlupek(cFizyka& X); //zmienia k¹t po odbiciu od s³upka
+	void odbicieSciana(float _alfa_v); //zmienia k¹t po odbiciu od œciany
 	void dostosuj_predkosc(float _v, float _alfa_v);
+	
 		//AKCJE Z PI£K¥
 	void prowadz_pilke(cFizyka& X);
-	/*void sprawdz*/
 	virtual int kolizja(cFizyka &X)=0; //wykrywanie kolizji z innym obiektem (funkcja przekazuje 1 gdy jest kolizja 0 gdy brak)
 	virtual void rysuj()=0;
 	void reset(); //resetuje czas_

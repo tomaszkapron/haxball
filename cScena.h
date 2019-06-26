@@ -12,12 +12,12 @@ void display_binding();
 
 class cScena
 {
-	std::pair<int, int> wynik;
+	int goleLewy_, golePrawy_;
 	std::vector<cFizyka*> obj;
 public:
-	bool czyGol(); //sprawdza czy pad³a bramka zwraca 
+	int czyGol(); //sprawdza czy pad³a bramka zwraca 
 	void ustawPoGolu();//ustawia po golu pi³kê i zawodników w odpowiednich miejscach
-	void zmienWynik();//ustawia wynik po golu
+	void wynik();
 			//CALLBACKS
 	void key(unsigned char key, int x, int y);
 	void resize(int width, int height);
@@ -26,6 +26,9 @@ public:
 
 	void init(int argc, char *argv[], const char* window_name);
 	void set_callbacks();
+
+
+	void rysuj_boisko();
 	
 	cScena();
 	~cScena();

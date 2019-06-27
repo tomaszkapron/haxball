@@ -20,6 +20,8 @@ class cScena
 		//LICZNIK WYNIKU
 	int goleLewy_, golePrawy_; //przechowuj¹ iloœæ goli
 
+	int eventID_;
+	int LewyGolFlag_, PrawyGolFlag_;
 	std::vector<cFizyka*> obj; //wektor obiektów aktywnych
 public:
 	cScena(); 
@@ -27,11 +29,13 @@ public:
 	//---------------------------------------------------
 		//LOGIKA GRY
 	int czyGol(); //sprawdza czy pad³a bramka zwraca 
-	void ustawPoGolu();//ustawia po golu pi³kê i zawodników w odpowiednich miejscach
+	void ustawPoGolu(int i);//ustawia po golu pi³kê i zawodników w odpowiednich miejscach
 	void wynik(); //wyœwietlanie wyniku w konsoli
 	void wygrana(); //sprawdza czy skoñczy³ siê czas, og³asza zwyciêzce, ustawia grê od nowa
 	void pokazCzas(); //wyœwietlanie czasu w konsoli
 	void aktualizujCzas(int czasAktualny); //Liczenie czasu gry
+	void dodajEvent();
+	void ustawNormalnie();
 	//---------------------------------------------------
 	void rysuj_boisko(); //rysuje boisko
 	//---------------------------------------------------

@@ -34,6 +34,7 @@ public:
 	void setR(float _r) { r_ = _r; }
 	void setX(float _x) { x_ = _x; }
 	void setY(float _y) { y_ = _y; }
+	void setV_X(float _Vx) { v_x_ = _Vx; }
 	void setPosition(float _x, float _y) { y_ = _y; x_ = _x; }
 	void ustaw_fizyka(float _t) { tarcie_ = _t; } //ustawia tarcie
 	void ustaw_predkosc(float _v, float _alfa_v) { v_ = _v; alfa_v_ = _alfa_v; } //ustawia poczatkowa predkosc
@@ -47,6 +48,7 @@ public:
 	void prowadz_pilke(cFizyka& X); //nadaje pi³ce prêdkoœæ i kierunek prowadz¹cego pi³kê
 	virtual int kolizja(cFizyka &X)=0; //(funkcja wirtualna) wykrywanie kolizji z innym obiektem (funkcja przekazuje 1 gdy jest kolizja 0 gdy brak)
 	virtual void rysuj()=0; //wirtualna funkcja rysowania gracza
+	
 //---------------------------------------------------
 	void reset(); //resetuje czas_
 

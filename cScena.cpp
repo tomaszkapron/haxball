@@ -4,6 +4,7 @@
 #include <chrono>
 #include <GL/freeglut.h>
 #include <Windows.h>
+#include <stdlib.h> 
 
 #define  P1 obj[0] //Gracz Lewy
 #define  P2 obj[1] //Gracz Prawy
@@ -12,6 +13,7 @@
 #define  S2 obj[4] //S³upek PD
 #define  S3 obj[5] //S³upek LG
 #define  S4 obj[6] //S³upek LD
+#define  E obj[7] //Event
 #define  V 0.001 //Prêdkoœæ podstawowa
 
 #define L 2.7 //d³ugoœæ od œrodka do prawej krawêdzi odbicia 
@@ -28,14 +30,15 @@ cScena::cScena() :goleLewy_(0), golePrawy_(0), czasMeczu_(180), bufferCzasu_(0) 
 	obj.push_back(new cPlayer()); //s³upek2; LD
 	obj.push_back(new cPlayer()); //s³upek3; PG
 	obj.push_back(new cPlayer()); //s³upek4; PD
+	obj.push_back(new cPlayer()); //event
 
-	S1->setPosition(L + 0.2, 2.3 - 1.5); //ustawia s³upek PG
+	S1->setPosition(L + 0.15, 2.3 - 1.5); //ustawia s³upek PG
 	S1->setR(0.1);
-	S2->setPosition(L + 0.2, -2.3 + 1.5); //ustawia s³upek PD
+	S2->setPosition(L + 0.15, -2.3 + 1.5); //ustawia s³upek PD
 	S2->setR(0.1);
-	S3->setPosition(-L - 0.2, 2.3 - 1.5); //ustawia s³upek LG
+	S3->setPosition(-L - 0.15, 2.3 - 1.5); //ustawia s³upek LG
 	S3->setR(0.1);
-	S4->setPosition(-L - 0.2, -2.3 + 1.5); //ustawia s³upek LD
+	S4->setPosition(-L - 0.15, -2.3 + 1.5); //ustawia s³upek LD
 	S4->setR(0.1);
 
 	B->setR(0.15);
@@ -43,26 +46,29 @@ cScena::cScena() :goleLewy_(0), golePrawy_(0), czasMeczu_(180), bufferCzasu_(0) 
 	P1->setPosition(-1.5, 0);
 	P2->setPosition(1.5, 0);
 	P1->setColor(0.5, 0.5, 0.5);
+
+	E->setPosition(5, 5);
+	ustawPoGolu(rand() % 1 + 1);
 	czas_ = GetTickCount();
 }
 
 void cScena::rysuj_boisko()
 {
-	cProstokat a(7, 2, 0, W + 1.2);
+	cProstokat a(7, 2, 0, W + 1.15); //sciana górna
 	a.rysuj();
-	cProstokat b(7, 2, 0, -W-1.2);
+	cProstokat b(7, 2, 0, -W-1.15); //sciana dolna
 	b.rysuj();
-	cProstokat c(2, 5, L+1.5,0);
+	cProstokat c(2, 5, L+1.5,0);//prawy ty³ bramki
 	c.rysuj();
-	cProstokat d(2, 5,- L - 1.5, 0);
+	cProstokat d(2, 5,- L - 1.5, 0); //lewy ty³ bramki
 	d.rysuj();
-	cProstokat e(2, 3, -L - 1.2, 2.3);
+	cProstokat e(2, 3, -L - 1.15, 2.3); 
 	e.rysuj();
-	cProstokat f(2, 3, -L - 1.2, -2.3);
+	cProstokat f(2, 3, -L - 1.15, -2.3);
 	f.rysuj();
-	cProstokat g(2, 3, L + 1.2, 2.3);
+	cProstokat g(2, 3, L + 1.15, 2.3);
 	g.rysuj();
-	cProstokat h(2, 3, L + 1.2, -2.3);
+	cProstokat h(2, 3, L + 1.15, -2.3);
 	h.rysuj();
 	cProstokat i(0.05, 6, 0, 0);
 	i.rysuj();
@@ -114,10 +120,16 @@ void cScena::timer()
 	}
 	//------------------------------------------
 		//ODBICIA PI£KI OD GRACZY
-	if (P1->kolizja(*B)==1)
+	if (P1->kolizja(*B) == 1) {
+		if (PrawyGolFlag_ == 1)
+			PrawyGolFlag_ = 0;
 		B->prowadz_pilke(*P1);
-	if (P2->kolizja(*B)==1)
+	}
+	if (P2->kolizja(*B) == 1) {
+		if (LewyGolFlag_ == 1)
+			LewyGolFlag_ = 0;
 		B->prowadz_pilke(*P2);
+	}
 		//ODBICIE GRACZA OD GRACZA
 	if (P1->kolizja(*P2) == 1)
 		P2->prowadz_pilke(*P1);
@@ -132,19 +144,48 @@ void cScena::timer()
 		B->odbicieSlupek(*S3);
 	if (S4->kolizja(*B) == 1)
 		B->odbicieSlupek(*S4);
+		//KOLIZJE Z EVENTEM
+	if (P1->kolizja(*E)) {
+		E->setPosition(5, 5);
+		if (eventID_ == 0) {
+			S3->setR(0.3);
+			S4->setR(0.3);
+		}
+		if (eventID_ == 1) {
+			B->setR(0.3);
+		}
+		if (eventID_ == 2) {
+			P1->setR(0.4);
+		}
+	}
+	if (P2->kolizja(*E)) {
+		E->setPosition(5, 5);
+		if (eventID_ == 0) {
+			S1->setR(0.3);
+			S2->setR(0.3);
+		}
+		if (eventID_ == 1) {
+			B->setR(0.3);
+		}
+		if (eventID_ == 2) {
+			P2->setR(0.4);
+		}
+		
+	}
+
 	//------------------------------------------
 		//ZASADY GRY
 	if (czyGol() == 1) {
 		goleLewy_++;
 		wynik();
 		Sleep(2000);
-		ustawPoGolu();
+		ustawPoGolu(1);
 	}
 	if (czyGol() == 2) {
 		golePrawy_++;
 		wynik();
 		Sleep(2000);
-		ustawPoGolu();
+		ustawPoGolu(2);
 	}
 	//------------------------------------------
 		//Sterowanie
@@ -158,19 +199,29 @@ void cScena::timer()
 		P1->dostosuj_predkosc(V, 180);
 	}
 	if (GetAsyncKeyState(0x44)) { //D
+		/*if (PrawyGolFlag_ == 1) {
+			if (P1->getX() > -0.5) {
+				P1->setX(-0.5);
+			}
+		}*/
 		P1->dostosuj_predkosc(V, 0);
 	}
 
-	if (GetAsyncKeyState(VK_UP)) { //W
+	if (GetAsyncKeyState(VK_UP)) { //^
 		P2->dostosuj_predkosc(V, 90);
 	}
-	if (GetAsyncKeyState(VK_DOWN)) { //S
+	if (GetAsyncKeyState(VK_DOWN)) { //\/
 		P2->dostosuj_predkosc(V, 270);
 	}
-	if (GetAsyncKeyState(VK_LEFT)) { //A
+	if (GetAsyncKeyState(VK_LEFT)) { //<-
+		/*if (LewyGolFlag_ == 1) {
+			if (P2->getX() < 0.5) {
+				P2->setX(0.5);
+			}
+		}*/
 		P2->dostosuj_predkosc(V, 180);
 	}
-	if (GetAsyncKeyState(VK_RIGHT)) { //D
+	if (GetAsyncKeyState(VK_RIGHT)) { //->
 		P2->dostosuj_predkosc(V, 0);
 	}
 	//-------------------------------------------
@@ -194,20 +245,25 @@ void cScena::display() {
 }
 
 int cScena::czyGol(){
-	if (B->getX() >= L+0.4) 
-		return 1;
+	if (B->getX() >= L + 0.3) {
 	
-	if (B->getX() <= -L-0.4) 
+		return 1;
+	}
+	if (B->getX() <= -L - 0.3) {
+		
 		return 2;
-
+	}
 	return 0;
 }
 
-void cScena::ustawPoGolu()
+void cScena::ustawPoGolu(int i)
 {
+	if (i == 1)
+		B->setPosition(1, 0);
+	if (i == 2)
+		B->setPosition(-1, 0);
 	P1->setPosition(-1.5,0);
 	P2->setPosition(1.5, 0);
-	B->setPosition(0, 0);
 	cPlayer *cf = dynamic_cast<cPlayer*>(B);
 	cf->ustaw_predkosc(0, 0);
 	cf = dynamic_cast<cPlayer*>(P1);
@@ -244,8 +300,16 @@ void cScena::aktualizujCzas(int czasAktualny)
 	float delta_t = czasAktualny - czas_;
 	bufferCzasu_ += delta_t;
 	czas_ += delta_t;
+	
 	if (bufferCzasu_ >= 1000) {
 		czasMeczu_ -= bufferCzasu_ / 1000;
+		//------------------------------------
+			//event
+		if (czasMeczu_ % 20 == 0) {
+			dodajEvent();
+			ustawNormalnie();
+		}
+		//------------------------------------
 		bufferCzasu_ = 0;
 		std::system("cls");
 		wynik();
@@ -256,9 +320,28 @@ void cScena::aktualizujCzas(int czasAktualny)
 			czasMeczu_ = 180;
 			goleLewy_ = 0;
 			golePrawy_ = 0;
-			ustawPoGolu();
+			ustawPoGolu(rand()%1+1);
 		}
 	}
+}
+
+void cScena::dodajEvent()
+{
+	srand(time(NULL));
+	eventID_ = (rand() % 3);
+	E->setR(0.08);
+	E->setPosition((rand() % 50 - 25) / 10, (rand() % 40 - 20) / 10);
+}
+
+void cScena::ustawNormalnie()
+{
+	S1->setR(0.1);
+	S2->setR(0.1);
+	S3->setR(0.1);
+	S4->setR(0.1);
+	P1->setR(0.2);
+	P2->setR(0.2);
+	B->setR(0.15);
 }
 
 void cScena::key(unsigned char key, int x, int y) {
@@ -266,14 +349,14 @@ void cScena::key(unsigned char key, int x, int y) {
 	
 	case 'p': {
 		cPlayer *cf = dynamic_cast<cPlayer*>(B);
-		if (P1->kolizja(*B)>1)
+		if (P1->kolizja(*B)>=1)
 			cf->strzal(*P1); }
 		break;
 
 	
 	case '0': {
 		cPlayer *cf = dynamic_cast<cPlayer*>(B);
-		if (P2->kolizja(*B) > 1)
+		if (P2->kolizja(*B) >= 1)
 			cf->strzal(*P2); }
 		break;
 	}
@@ -303,7 +386,7 @@ void cScena::set_callbacks() {
 void cScena::init(int argc, char **argv, const char *window_name) {
 	glutInit(&argc, argv);
 	glutInitWindowSize(800, 600);
-	glutInitWindowPosition(200, 40);
+	glutInitWindowPosition(350, 40);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
 
 	glutCreateWindow(window_name);

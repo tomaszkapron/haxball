@@ -32,7 +32,7 @@ void cFizyka::aktualizuj(int czas_aktualny)
 	v_ = sqrt(v_x_*v_x_ + v_y_ * v_y_);
 		//kierunek predkosci
 	alfa_v_ = atan2(v_y_, v_x_)*180.0 / M_PI;
-
+	
 	czas_ += delta_t;
 }
 
@@ -79,6 +79,8 @@ void cFizyka::prowadz_pilke(cFizyka& X)
 	v = 0.001;
 	this->ustaw_predkosc(v,kat);
 }
+
+
 
 void cFizyka::reset()
 {

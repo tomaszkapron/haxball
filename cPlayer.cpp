@@ -45,14 +45,16 @@ void cPlayer::strzal(cFizyka& X)
 
 int cPlayer::kolizja(cFizyka & X)
 {
+	
 	if (this->r_ + X.getR() - sqrt(pow(this->getX() - X.getX(), 2) + pow(this->getY() - X.getY(), 2)) > 0.0) {
 		
 		return 1; //Styka siê
 	}
 	if (this->r_ + X.getR() - sqrt(pow(this->getX() - X.getX(), 2) + pow(this->getY() - X.getY(), 2)) > -0.05) {
-		
+
 		return 2; //Jest w zasiegu strza³u
 	}
+	
 	else return 0;
 }
 

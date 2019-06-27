@@ -15,7 +15,7 @@ void cPlayer::rysuj()
 	glRotated(0, 0.0, 1.0, 0.0);
 	glRotated(0, 0.0, 0.0, 1.0);
 
-	glColor3d((rand()%100)/100, (rand()%100)/100, (rand()%100)/100);
+	glColor3d(R_,G_,B_);
 
 	glBegin(GL_TRIANGLE_FAN);
 	{
@@ -39,7 +39,7 @@ void cPlayer::strzal(cFizyka& X)
 	float kat, v;
 	kat = atan2(this->getY() - X.getY(),this->getX() - X.getX())*180.0 / M_PI;
 	//v = X.getV()*(this->getAlfaV()/ X.getAlfaV());
-	v = 0.01;
+	v = 0.004;
 	this->ustaw_predkosc(v, kat);
 }
 
@@ -59,7 +59,6 @@ int cPlayer::kolizja(cFizyka & X)
 cPlayer::cPlayer() : cFizyka()
 {
 }
-
 
 cPlayer::~cPlayer()
 {

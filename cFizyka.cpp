@@ -85,14 +85,14 @@ void cFizyka::reset()
 	czas_ = GetTickCount();
 }
 
-cFizyka::cFizyka(float x, float y, float r) : x_(x), y_(y), r_(r)
+cFizyka::cFizyka(float x, float y, float r,float R,float G,float B)
+	: x_(x), y_(y), r_(r),R_(R),G_(G),B_(B)
 {
 	v_x_ = 0.0;
 	v_y_ = 0.0;
 	v_ = 0.0;
 	alfa_v_ = 0.0;
-	tarcie_ = 0.94;
-	mass_ = 0.0;
+	tarcie_ = 0.97;
 
 	reset();
 }

@@ -347,14 +347,14 @@ void cScena::ustawNormalnie()
 void cScena::key(unsigned char key, int x, int y) {
 	switch (key) {
 	
-	case 'p': {
+	case 't': {
 		cPlayer *cf = dynamic_cast<cPlayer*>(B);
 		if (P1->kolizja(*B)>=1)
 			cf->strzal(*P1); }
 		break;
 
 	
-	case '0': {
+	case 'p': {
 		cPlayer *cf = dynamic_cast<cPlayer*>(B);
 		if (P2->kolizja(*B) >= 1)
 			cf->strzal(*P2); }
